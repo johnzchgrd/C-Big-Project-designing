@@ -1,0 +1,241 @@
+#include <stdio.h>
+#include <conio.h>
+#include <string.h>
+
+typedef struct
+{
+	char sno[6];     /*学号*/
+	char name[9];   /*姓名*/
+    float score[5];   /*成绩*/
+} StudentScore;
+
+StudentScore stu[100];/*定义一个具有100个元素的学生成绩结构体数组（全局）*/
+int n=-1;
+
+void display();
+void find();
+void modify();
+void add();
+void del();
+void write();
+void list();
+void listOne(StudentScore s);/*显示一条学生记录*/
+int isExists(char sno[]);    /*是否存在学号为sno的学生记录，存在返回该学生在数组中的下标，否则返回-1*/
+
+void main()
+{ 
+	char c;                            /*存储用户选择的功能编号*/
+	while(1) 
+	{
+		display();                     /*显示主界面*/
+		c=getchar();getchar();         /*输入用户选择的功能编号*/
+		switch (c)
+		{
+			case '1':find();break;       /*查询*/
+			case '2':add(); break;    /*修改*/
+			case '3':modify(); break;       /*添加*/     
+			case '4':del(); break;       /*删除*/
+			//case '5':write(); break;     /*保存*/
+			case '6':list(); break;      /*浏览*/
+			case '7':printf("\t\t...退出系统!\n"); return; 			
+			default: printf("\t\t输入错误!请按任意键返回重新选择(1-7)\n");getch();
+		}		
+	}
+}
+
+/*显示主界面*/
+void display()
+{
+    //System("cls");    /*清屏命令*/
+	fflush(stdin);
+	printf("\n\t★☆   欢迎使用学生成绩管理系统    ☆★\n\n");
+	printf("\t请选择(1-7): \n");
+	printf("\t=========================================\n");
+	printf("\t\t1.查询学生成绩\n");
+	printf("\t\t2.添加学生成绩\n");
+	printf("\t\t3.修改学生成绩\n");
+	printf("\t\t4.删除学生成绩\n");
+	printf("\t\t5.保存数据到文件\n");
+	printf("\t\t6.浏览数据\n");
+	printf("\t\t7.退出\n");
+	printf("\t=========================================\n");
+	printf("\t您的选择是：");
+}
+
+/*显示一条学生记录*/
+void listOne(StudentScore s)
+{
+	printf("\n该学生成绩记录如下：");
+	printf("\n======================================================\n\n");
+	printf("%-8s%-10s%-7s%-7s%-7s%-7s%-7s\n","学号","姓名","语文","数学","外语","综合","总分");
+	printf("%-8s%-10s%-7.1f%-7.1f%-7.1f%-7.1f%-7.1f\n",s.sno,s.name,s.score[0],s.score[1],s.score[2],s.score[3],s.score[4]);
+}
+
+/*是否存在学号为sno的学生记录，存在返回该学生在数组中的下标，否则返回-1*/
+int isExists(char sno[])
+{
+    for (int i=0;i<=n;i++)
+		if (strcmp(stu[i].sno,sno)==0)
+			return i;   /*找到该学生*/
+	return -1;          /*未找到该学生*/       
+}
+
+/*根据学号查询学生成绩记录*/
+void find()
+{
+	char sno[6];  /*接收学生学号字符数组*/
+	int i;
+
+	if (n==-1)     /*人数为0说明工资记录尚未添加*/
+	{
+		printf("\n\t\t当前还没有学生成绩记录，按任意键返回主菜单......");
+		getch();
+		return;
+	}
+
+	printf("\t\t请输入学生学号：");
+	gets(sno);
+	if ((i=isExists(sno))!=-1) /*如果该学生存在则显示学生成绩记录*/
+		listOne(stu[i]);
+	else
+		printf("\n\t\t您所输入的学生学号有误或不存在！");
+	printf("\n\t\t按任意键返回主菜单......");
+	getch();
+}
+
+
+/*添加学生成绩记录*/
+void add()
+{
+	char sno[6];
+	int i;
+
+	if (n>=100)     /*学生成绩数组已满*/
+	{
+		printf("\n\t\t学生成绩记录已满，按任意键返回主菜单......");
+		getch();
+		return;
+	}
+
+    printf("\t\t请输入学生学号：");
+	gets(sno);
+
+	if ((i=isExists(sno))==-1)/*如果不存在该学生成绩记录，则添加*/
+	{
+		strcpy(stu[++n].sno,sno);
+		printf("\t\t请输入学生姓名：");
+		gets(stu[n].name);
+		printf("\t\t请输入该学生的语文成绩:");
+		scanf("%f",&stu[n].score[0]);
+		printf("\t\t请输入该学生的数学成绩:");
+		scanf("%f",&stu[n].score[1]);
+		printf("\t\t请输入该学生的外语成绩:");
+		scanf("%f",&stu[n].score[2]);
+		printf("\t\t请输入该学生的综合成绩:");
+		scanf("%f",&stu[n].score[3]);
+		/*计算总分并输出*/
+		stu[n].score[4]=0;
+		for (int i=0;i<4;i++)
+			stu[n].score[4]+=stu[n].score[i];
+		printf("\t\t该学生的总分%-7.1f:",stu[n].score[4]);
+	}
+	else
+		printf("\n\t\t您所输入的学生学号已存在！");
+
+    printf("\n\t\t按任意键返回主菜单......");
+	getch();
+
+}
+
+/*修改学生成绩记录*/
+void modify()
+{
+    char sno[6];  /*接收学生学号字符数组*/
+	int i;
+
+	if (n==-1)     /*人数为0说明工资记录尚未添加*/
+	{
+		printf("\n\t\t当前还没有学生成绩记录，按任意键返回主菜单......");
+		getch();
+		return;
+	}
+
+	printf("\t\t请输入学生学号：");
+	gets(sno);
+	if ((i=isExists(sno))!=-1) /*如果该学生存在则显示学生成绩记录并录入新的学生成绩记录*/
+	{
+		listOne(stu[i]);
+		printf("\t\t请输入该学生新的语文成绩:");
+		scanf("%f",&stu[i].score[0]);
+		printf("\t\t请输入该学生新的数学成绩:");
+		scanf("%f",&stu[i].score[1]);
+		printf("\t\t请输入该学生新的外语成绩:");
+		scanf("%f",&stu[i].score[2]);
+		printf("\t\t请输入该学生新的综合成绩:");
+		scanf("%f",&stu[i].score[3]);
+		/*计算总分并输出*/
+		stu[i].score[4]=0;
+		for (int j=0;j<4;j++)
+			stu[i].score[4]+=stu[n].score[j];
+		printf("\t\t该学生新的总分%-7.1f:",stu[i].score[4]);
+	}
+	else
+		printf("\n\t\t您所输入的学生学号有误或不存在！");
+	printf("\n\t\t按任意键返回主菜单......");
+	getch();
+}
+
+/*删除学生成绩记录*/
+void del()
+{
+    char sno[6];  /*接收学生学号字符数组*/
+	int i;
+
+	if (n==-1)     /*人数为0说明工资记录尚未添加*/
+	{
+		printf("\n\t\t当前还没有学生成绩记录，按任意键返回主菜单......");
+		getch();
+		return;
+	}
+
+    printf("\t\t请输入学生学号：");
+	gets(sno);
+	if ((i=isExists(sno))!=-1) /*如果该学生存在则删除*/
+	{
+		for (int j=i+1;j<=n;j++)/*将数组i+1~n之间的元素依次复制到i~n-1*/
+		{
+			strcpy(stu[j-1].sno,stu[j].sno);
+			strcpy(stu[j-1].name,stu[j].name);
+			for (int k=0;k<5;k++)
+				stu[j-1].score[k]=stu[j].score[k];
+		}
+		n--;
+		printf("\n\t\t删除成功！");
+	}
+	else
+		printf("\n\t\t您所输入的学生学号有误或不存在！");
+	printf("\n\t\t按任意键返回主菜单......");
+	getch();
+}
+
+
+void list()
+{
+	if (n==-1)     /*人数为0说明工资记录尚未添加*/
+	{
+		printf("\n\t\t当前还没有学生成绩记录，按任意键返回主菜单......");
+		getch();
+		return;
+	}
+	printf("\n所有学生成绩记录如下：");
+	printf("\n======================================================\n\n");
+	printf("%-8s%-10s%-7s%-7s%-7s%-7s%-7s\n","学号","姓名","语文","数学","外语","综合","总分");
+	for (int i=0;i<=n;i++)
+		printf("%-8s%-10s%-7.1f%-7.1f%-7.1f%-7.1f%-7.1f\n",stu[i].sno,stu[i].name,stu[i].score[0],stu[i].score[1],stu[i].score[2],stu[i].score[3],stu[i].score[4]);
+    printf("\n\t\t按任意键返回主菜单......");
+	getch();
+
+}
+
+
+

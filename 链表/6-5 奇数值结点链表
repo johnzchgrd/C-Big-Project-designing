@@ -1,0 +1,122 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct ListNode {
+    int data;
+    struct ListNode *next;
+};
+
+struct ListNode *readlist();
+struct ListNode *getodd( struct ListNode **L );
+void printlist( struct ListNode *L )
+{
+     struct ListNode *p = L;
+     while (p) {
+           printf("%d ", p->data);
+           p = p->next;
+     }
+     printf("\n");
+}
+
+int main()
+{
+    struct ListNode *L, *Odd;
+    L = readlist();
+    Odd = getodd(&L);
+    printlist(Odd);
+    printlist(L);
+
+    return 0;
+}
+struct ListNode *readlist(){
+    struct ListNode *p,*head=NULL,*last;
+    
+		while(1){
+			  p=(struct ListNode *)malloc(sizeof(struct ListNode));
+			  p->next=NULL;
+			  
+				scanf("%d",&p->data);
+				if(p->data == -1)
+				  break;
+				/*  //insert at the beginning
+			  if(head==NULL)//initial
+			    head=p;
+				else{
+					p->next = head;
+				  head = p;
+				}
+				*/
+				//insert at bottom
+				if (head == NULL)
+				{
+				  head = p;
+				}
+				else
+					last->next = p;
+					
+				last = p;
+		}
+	return head;
+
+} 
+struct ListNode *getodd( struct ListNode **L ){
+	 struct ListNode *odd=NULL,*op,*last,*now;
+   if((*L)==NULL)
+     return NULL;	 
+	 
+  //initialize  
+  //got to the true head(first corresponding node)
+	while(1){
+	  now = (*L); 
+	  if(now==NULL)
+	    break;
+	  if(now->data % 2 != 0){
+	  	*L=(*L)->next;
+	  	//now->data is odd
+	  	if(odd==NULL){
+	  		odd = now;//first node of Odd
+	  		op=now;//initialize struct-pointer op
+			}
+	  	else
+	  	  {///add node to odd
+	  	  	op->next = now;
+	  	  	op=op->next;
+				}
+				op->next=NULL;//tail'next node points to 0x0
+	  }
+	  else{
+		  break;
+	  }
+  }  
+   //printlist(*L);//////test use///////
+  //core-the data of the first node should be even
+  if(*L!=NULL){
+  	now = (*L)->next;
+	  last = (*L);
+	  while(now != NULL){
+		  if(now->data % 2 != 0){
+		  	last->next = now->next;
+		  	//now->data is odd
+		  	if(odd==NULL){
+		  		odd = now;//in case-first node of Odd
+		  		op=now;
+				}
+		  	else
+		  	  {
+		  	  	op->next = now;
+		  	  	op=op->next;
+					}
+					now = now->next;
+		    op->next=NULL;//tail'next node points to 0x0
+			  }
+			  else{
+				  last = now;
+				  now = now->next;
+			  }
+			  
+	  }
+	}
+  
+	 
+	 return odd;
+}

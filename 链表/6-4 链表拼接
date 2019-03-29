@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct ListNode {
+    int data;
+    struct ListNode *next;
+};
+
+struct ListNode *createlist(); /*裁判实现，细节不表*/
+struct ListNode *mergelists(struct ListNode *list1, struct ListNode *list2);
+void printlist( struct ListNode *head )
+{
+     struct ListNode *p = head;
+     while (p) {
+           printf("%d ", p->data);
+           p = p->next;
+     }
+     printf("\n");
+}
+
+int main()
+{
+    struct ListNode  *list1, *list2;
+		/*其中list1和list2是用户传入的两个按data升序链接的链表的头指针；
+		函数mergelists将两个链表合并成一个按data升序链接的链表，
+		并返回结果链表的头指针
+		*/
+    list1 = createlist();
+    list2 = createlist();
+    list1 = mergelists(list1, list2);
+    printlist(list1);
+	
+    return 0;
+}
+struct ListNode *createlist(){
+    struct ListNode *p,*head=NULL,*last;
+    
+		while(1){
+			  p=(struct ListNode *)malloc(sizeof(struct ListNode));
+			  p->next=NULL;
+			  
+				scanf("%d",&p->data);
+				if(p->data == -1)
+				  break;
+				/*  //insert at the beginning
+			  if(head==NULL)//initial
+			    head=p;
+				else{
+					p->next = head;
+				  head = p;
+				}
+				*/
+				//insert at bottom
+				if (head == NULL)
+				{
+				  head = p;
+				}
+				else
+					last->next = p;
+					
+				last = p;
+		}
+	return head;
+
+} 
+struct ListNode *mergelists(struct ListNode *list1, struct ListNode *list2){
+	struct ListNode *head,*mainline,*comparator,*tmp;
+	if(list1==NULL&&list2==NULL)//if both list1 and list2 are nil return null
+	  return NULL;
+	head = (list1->data > list2->data)?list2:list1;//head takes the smaller one
+	//initialize
+  mainline = head;
+  comparator = (mainline==list1)?list2:list1;//take another list node
+  
+	while(mainline!=NULL && comparator!=NULL){
+		  	//mainline=mainline->next;
+		  	if(comparator->data >= mainline->data && comparator->data <= mainline->next->data)
+		  	 {//delete the two '='s if the same data are to be selected once 
+		  	 	//insert betweeen mainline-now and mainline-next
+		  	 	tmp = comparator->next;
+		  	 	comparator->next = mainline->next;
+		  	 	mainline->next = comparator;
+		  	 	comparator = tmp;
+		  	 	
+				 }
+				 //ready for next comparison
+		  	 	mainline = mainline->next;
+		}
+	
+	return head;
+}
+

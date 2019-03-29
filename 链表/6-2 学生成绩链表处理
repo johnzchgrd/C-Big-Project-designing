@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+//定义结构体
+struct stud_node {
+     int    num;
+     char   name[20];
+     int    score;
+     struct stud_node *next;
+};
+
+struct stud_node *createlist();//创建列表
+struct stud_node *deletelist( struct stud_node *head, int min_score );//删除小于指定值的链表节点
+
+int main()
+{
+    int min_score;
+    struct stud_node *p, *head = NULL;
+
+    head = createlist();
+    scanf("%d", &min_score);
+    head = deletelist(head, min_score);
+    for ( p = head; p != NULL; p = p->next )
+        printf("%d %s %d\n", p->num, p->name, p->score);
+
+    return 0;
+}
+struct stud_node *createlist(){
+  struct stud_node *q,*head=NULL,*tail;
+ int num;
+    
+    while (1)
+    {   scanf ("%d", &num);
+	    if(num==0)
+	      break;
+        q = (struct stud_node *)malloc (sizeof (struct stud_node));
+        scanf ("%s %d", q->name, &q->score);
+        q->num = num;
+        q->next = NULL;
+        
+        if (head == NULL)
+            head = q;
+        else
+            tail->next = q;
+        tail = q;
+    }
+    return head;
+}
+struct stud_node *deletelist( struct stud_node *head, int min_score ){
+  struct stud_node *now,*last; 
+  //initialize  
+  //got to the true head(first corresponding node)
+  while(1){
+  	  if(head==NULL)
+        return NULL;
+	  now = head; 
+	  if(now->score < min_score && now == head){
+		  head = head->next;
+		  continue;
+	  }
+	  else{
+		  break;
+	  }
+  }  
+   
+  //core-excluding head-deletion situation
+  now = head->next;
+  last = head;
+  while(now != NULL){
+	  if(now->score < min_score){
+		  last->next = now->next;
+	  }
+	  else{
+		  last = now;
+	  }
+	  now = now->next;
+  }
+  
+  return head;
+}
